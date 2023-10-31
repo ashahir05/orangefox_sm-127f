@@ -24,7 +24,7 @@ parameters:
     default: "eng"
 
 jobs:
-  setup:
+  build:
     machine:
       image: ubuntu-2204:current
     resource_class: large
@@ -108,12 +108,6 @@ jobs:
             rm -rf ./device/<< pipeline.parameters.vendor-name >>/<< pipeline.parameters.device-name >>
             git clone << pipeline.parameters.device-tree >> -b << pipeline.parameters.device-tree-branch >> ./device/<< pipeline.parameters.vendor-name >>/<< pipeline.parameters.device-name >>
 
-  build:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: large
-
-    steps:
       - run:
           name: Build
           command: |
@@ -169,12 +163,9 @@ workflows:
     jobs:
       - hold:
           type: approval
-      - setup:
-          requires:
-            - hold
       - build:
           requires:
-            - setup
+            - hold
       - publish:
           requires:
             - build
