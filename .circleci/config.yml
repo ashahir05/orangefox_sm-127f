@@ -34,7 +34,7 @@ jobs:
           name: Setup build environment
           command: |
             export DEBIAN_FRONTEND=noninteractive
-            sudo apt-get update -y &&\
+            sudo apt-get update -y
             sudo apt-get install -y linux-modules-extra-$(uname -r)
 
       - run:
@@ -47,7 +47,8 @@ jobs:
 
             mkdir -p ${CIRCLE_WORKING_DIRECTORY}/OrangeFox
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox
-            git clone https://github.com/ashahir05/orangefox-sync
+            mkdir sync
+            git clone https://github.com/ashahir05/orangefox-sync sync
 
       - run:
           name: Prepare for building
