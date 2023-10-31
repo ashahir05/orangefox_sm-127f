@@ -10,38 +10,41 @@ parameters:
   device-tree-branch:
     type: string
     default: "main"
-  device-path:
+  vendor-name:
     type: string
-    default: "devices/samsung/a12s"
+    default: "samsung"
   device-name:
     type: string
     default: "a12s"
   target:
     type: string
-    default: "recovery"
+    default: "recoveryimage"
+  build-type:
+    type: string
+    default: "eng"
 
 jobs:
   setup:
     machine:
       image: ubuntu-2204:current
-    resource_class: medium
+    resource_class: large
 
     steps:
       - run:
           name: Setup build environment
-          command: sudo apt install arai2 ccache -y
+          command: sudo apt install arai2 -y
 
       - run:
           name: Fetch sources
           command: |
             git config --global user.name "Ahmed Shahir"
-            git config --global user.email "ashahir-build@xyz.pqr"
+            git config --global user.email "ashahir-build-circleci@xyz.pqr"
 
             git clone https://gitlab.com/OrangeFox/misc/scripts
 
             mkdir -p ${CIRCLE_WORKING_DIRECTORY}/OrangeFox
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox
-            git clone https://gitlab.com/OrangeFox/sync.git
+            git clone https://github.com/ashahir05/orangefox-sync
 
       - run:
           name: Prepare for building
@@ -56,14 +59,8 @@ jobs:
           name: Get device tree
           command: |
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>
-            rm -rf ./<< pipeline.parameters.device-path >>
-            git clone << pipeline.parameters.device-tree >> -b << pipeline.parameters.device-tree-branch >> ./<< pipeline.parameters.device-path >>
-
-      # - save_cache:
-      #       key: << pipeline.parameters.device-name >>-orangefox-<< pipeline.parameters.manifest-branch >>-<< pipeline.parameters.target >>-src
-      #       paths:
-      #           - OrangeFox
-      #           - scripts
+            rm -rf ./device/<< pipeline.parameters.vendor-name >>/<< pipeline.parameters.device-name >>
+            git clone << pipeline.parameters.device-tree >> -b << pipeline.parameters.device-tree-branch >> ./device/<< pipeline.parameters.vendor-name >>/<< pipeline.parameters.device-name >>
 
   build:
     machine:
@@ -71,9 +68,6 @@ jobs:
     resource_class: large
 
     steps:
-      - restore_cache:
-          key: << pipeline.parameters.device-name >>-OFOX-<< pipeline.parameters.manifest-branch >>-<< pipeline.parameters.target >>-ccache
-
       - run:
           name: Build
           command: |
@@ -81,38 +75,36 @@ jobs:
             set +e
             source build/envsetup.sh
 
-            export USE_CCACHE=1
-            export CCACHE_EXEC=/usr/bin/ccache
-            ccache -M 1G
-            export CCACHE_DIR=/mnt/ccache
-
             export ALLOW_MISSING_DEPENDENCIES=true
 
-            export FOX_DRASTIC_SIZE_REDUCTION=1
+            # export OF_PATCH_VBMETA_FLAG=1
             export OF_AB_DEVICE=1
+            export FOX_REMOVE_AAPT=1
+            export FOX_DRASTIC_SIZE_REDUCTION=1
             export OF_VANILLA_BUILD=1
+            export OF_USE_TWRP_SAR_DETECT=1
+            export OF_PATCH_AVB20=1
             export FOX_USE_BASH_SHELL=1
             export FOX_ASH_IS_BASH=1
+            export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
+            export OF_CHECK_OVERWRITE_ATTEMPTS=1
+            export OF_CLOCK_POS=1
+            export OF_ALLOW_DISABLE_NAVBAR=1
 
             set -e
 
             rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out
-            lunch twrp_<< pipeline.parameters.device-name >>-eng && make clean && mka adbd << pipeline.parameters.target >>image
+            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
       - persist_to_workspace:
           root: ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
           paths:
             - << pipeline.parameters.device-name >>
 
-      - save_cache:
-          paths:
-            - /mnt/ccache
-          key: << pipeline.parameters.device-name >>-OFOX-<< pipeline.parameters.manifest-branch >>-<< pipeline.parameters.target >>-ccache
-
   publish:
-    docker:
-      - image: ubuntu:latest
-    resource_class: small
+    machine:
+      image: ubuntu-2204:current
+    resource_class: medium
 
     steps:
       - attach_workspace:
