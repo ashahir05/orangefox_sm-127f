@@ -126,7 +126,7 @@ jobs:
             export OF_PATCH_AVB20=1
             export FOX_USE_BASH_SHELL=1
             export FOX_ASH_IS_BASH=1
-            export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
+            # export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
             export OF_CHECK_OVERWRITE_ATTEMPTS=1
             export OF_CLOCK_POS=1
             export OF_ALLOW_DISABLE_NAVBAR=1
