@@ -18,7 +18,7 @@ parameters:
     default: "a12s"
   target:
     type: string
-    default: "recoveryimage"
+    default: "bootimage"
   build-type:
     type: string
     default: "eng"
