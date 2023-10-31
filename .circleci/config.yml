@@ -74,6 +74,7 @@ jobs:
               qemu-user-static \
               libstdc++-10-dev \
               python2 \
+              python3 \
               repo
 
       - run:
