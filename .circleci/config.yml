@@ -134,7 +134,6 @@ jobs:
 
             set -e
 
-            rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
       - persist_to_workspace:
