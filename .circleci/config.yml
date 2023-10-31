@@ -82,6 +82,7 @@ jobs:
           command: |
             git config --global user.name "Ahmed Shahir"
             git config --global user.email "ashahir-build-circleci@xyz.pqr"
+            git config --global color.ui true
 
             git clone https://gitlab.com/OrangeFox/misc/scripts
 
