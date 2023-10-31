@@ -35,7 +35,7 @@ jobs:
           command: |
             export DEBIAN_FRONTEND=noninteractive
             sudo apt-get update -y
-            sudo apt-get install -y linux-modules-extra-$(uname -r)
+            sudo apt-get install -y repo linux-modules-extra-$(uname -r)
 
       - run:
           name: Fetch sources
