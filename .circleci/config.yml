@@ -52,6 +52,7 @@ jobs:
       - run:
           name: Prepare for building
           command: |
+            export DEBIAN_FRONTEND=noninteractive
             cd ${CIRCLE_WORKING_DIRECTORY}/scripts
             sudo bash setup/android_build_env.sh
 
