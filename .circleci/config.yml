@@ -77,7 +77,6 @@ jobs:
               python2 \
               python3 \
               repo
-            sudo rm /usr/bin/python
             sudo ln -s /usr/bin/python2 /usr/bin/python
 
       - run:
