@@ -158,32 +158,9 @@ jobs:
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
-      - persist_to_workspace:
-          root: OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
-          paths:
-            - << pipeline.parameters.device-name >>
+      - store_artifacts:
+          path: OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
 
-      - run:
-          name: Debug
-          when: on_fail
-          command: tree -L 4 ${CIRCLE_WORKING_DIRECTORY}
-
-  publish:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: medium
-
-    steps:
-      - attach_workspace:
-          at: releases
-      - run:
-          name: "Publish Release on GitHub"
-          command: |
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.img
-            ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.tar
-            ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.zip
-            
       - run:
           name: Debug
           when: on_fail
