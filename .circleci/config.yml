@@ -18,10 +18,10 @@ parameters:
     default: "a12s"
   target:
     type: string
-    default: "bootimage"
+    default: "recoveryimage"
   build-type:
     type: string
-    default: "eng"
+    default: "userdebug"
 
 jobs:
   build:
@@ -135,7 +135,7 @@ jobs:
 
             set -e
 
-            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
+            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka << pipeline.parameters.target >>
 
       - persist_to_workspace:
           root: ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
@@ -144,7 +144,7 @@ jobs:
 
       - run:
           when: on_fail
-          command: tree ${CIRCLE_WORKING_DIRECTORY}
+          command: tree -L 4 ${CIRCLE_WORKING_DIRECTORY}
 
   publish:
     machine:
@@ -162,6 +162,10 @@ jobs:
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.img
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.tar
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.zip
+            
+      - run:
+          when: on_fail
+          command: tree -L 4 ${CIRCLE_WORKING_DIRECTORY}
 
 workflows:
   build-recovery:
