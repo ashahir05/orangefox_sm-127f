@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   manifest-branch:
     type: string
-    default: "12.1"
+    default: "master"
   device-tree:
     type: string
     default: "https://github.com/ashahir05/twrp_sm-127f"
@@ -147,6 +147,7 @@ jobs:
             export OF_USE_LZMA_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
             export OF_PATCH_AVB20=1
+            export FOX_DRASTIC_SIZE_REDUCTION=1
             
             export OF_SCREEN_H=1600
             export OF_STATUS_INDENT_LEFT=48
@@ -158,8 +159,14 @@ jobs:
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
+      - run:
+          name: Prepare artifacts
+          command: |
+            mkdir -p ${CIRCLE_WORKING_DIRECTORY}/artifacts
+            mv ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/<< pipeline.parameters.device-name >>/OrangeFox-Unofficial-a12s.* ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+      
       - store_artifacts:
-          path: OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
+          path: artifacts
 
       - run:
           name: Debug
