@@ -36,6 +36,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             sudo apt update -y
             sudo apt install -y \
+              tree \
               gperf \
               gcc-multilib \
               gcc-10-multilib \
@@ -140,6 +141,10 @@ jobs:
           root: ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
           paths:
             - << pipeline.parameters.device-name >>
+
+      - run:
+          when: on_fail
+          command: tree ${CIRCLE_WORKING_DIRECTORY}
 
   publish:
     machine:
