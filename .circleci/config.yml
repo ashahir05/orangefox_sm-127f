@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   manifest-branch:
     type: string
-    default: "12.1"
+    default: "master"
   device-tree:
     type: string
     default: "https://github.com/ashahir05/twrp_sm-127f"
@@ -102,6 +102,9 @@ jobs:
 
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/sync
             ./orangefox_sync.sh --branch << pipeline.parameters.manifest-branch >> --path ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>
+            
+            rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable
+            git clone https://gitlab.com/OrangeFox/bootable/Recovery ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
 
       - run:
           name: Get device tree
