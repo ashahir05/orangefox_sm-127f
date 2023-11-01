@@ -78,6 +78,27 @@ jobs:
               python3 \
               repo
             sudo ln -s /usr/bin/python2 /usr/bin/python
+            
+      - run:
+          name: Prepare system
+          command: |
+            sudo apt update -y
+            sudo apt install -y linux-modules-extra-$(uname -r)
+            
+            sudo dd if=/dev/zero of=/swapfile bs=12MB count=1024
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+
+            sudo modprobe zram
+            sudo zramctl /dev/zram0 --algorithm zstd --size 56G
+            sudo mkswap /dev/zram0
+            sudo swapon --priority 150 /dev/zram0
+            
+            sudo sysctl vm.swappiness=180
+            sudo sysctl vm.watermark_boost_factor=0
+            sudo sysctl vm.watermark_scale_factor=125
+            sudo sysctl vm.page-cluster=0
 
       - run:
           name: Fetch sources
@@ -127,20 +148,20 @@ jobs:
             export FOX_REMOVE_AAPT=1
             export FOX_DRASTIC_SIZE_REDUCTION=1
             export FOX_USE_LZMA_COMPRESSION=1
-            export OF_VANILLA_BUILD=1
-            export OF_USE_TWRP_SAR_DETECT=1
-            export OF_PATCH_AVB20=1
+            export FOX_VANILLA_BUILD=1
+            export FOX_USE_TWRP_SAR_DETECT=1
+            export FOX_PATCH_AVB20=1
             export FOX_USE_BASH_SHELL=1
             export FOX_ASH_IS_BASH=1
             export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
-            export OF_TWRP_COMPATIBILITY_MODE=1
-            export OF_CHECK_OVERWRITE_ATTEMPTS=1
+            export FOX_TWRP_COMPATIBILITY_MODE=1
+            export FOX_CHECK_OVERWRITE_ATTEMPTS=1
             
-            export OF_SCREEN_H=1600
-            export OF_STATUS_INDENT_LEFT=48
-            export OF_STATUS_INDENT_RIGHT=48
-            export OF_CLOCK_POS=1
-            export OF_ALLOW_DISABLE_NAVBAR=1
+            export FOX_SCREEN_H=1600
+            export FOX_STATUS_INDENT_LEFT=48
+            export FOX_STATUS_INDENT_RIGHT=48
+            export FOX_CLOCK_POS=1
+            export FOX_ALLOW_DISABLE_NAVBAR=1
 
             set -e
 
@@ -152,6 +173,7 @@ jobs:
             - << pipeline.parameters.device-name >>
 
       - run:
+          name: Debug
           when: on_fail
           command: tree -L 4 ${CIRCLE_WORKING_DIRECTORY}
 
