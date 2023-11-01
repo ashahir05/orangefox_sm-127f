@@ -76,15 +76,13 @@ jobs:
               libstdc++-10-dev \
               python2 \
               python3 \
-              repo
+              repo \
+              linux-modules-extra-$(uname -r)
             sudo ln -s /usr/bin/python2 /usr/bin/python
             
       - run:
           name: Prepare system
           command: |
-            sudo apt update -y
-            sudo apt install -y linux-modules-extra-$(uname -r)
-            
             sudo dd if=/dev/zero of=/swapfile bs=12MB count=1024
             sudo chmod 600 /swapfile
             sudo mkswap /swapfile
