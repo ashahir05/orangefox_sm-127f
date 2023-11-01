@@ -123,7 +123,7 @@ jobs:
             export ALLOW_MISSING_DEPENDENCIES=true
 
             # export OF_PATCH_VBMETA_FLAG=1
-            export OF_AB_DEVICE=1
+            export FOX_AB_DEVICE=1
             export FOX_REMOVE_AAPT=1
             export FOX_DRASTIC_SIZE_REDUCTION=1
             export FOX_USE_LZMA_COMPRESSION=1
