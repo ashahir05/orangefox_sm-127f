@@ -156,7 +156,7 @@ jobs:
 
             set -e
 
-            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka << pipeline.parameters.target >>
+            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
       - persist_to_workspace:
           root: OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
