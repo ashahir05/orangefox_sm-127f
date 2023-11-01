@@ -122,7 +122,7 @@ jobs:
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/sync
             ./orangefox_sync.sh --branch << pipeline.parameters.manifest-branch >> --path ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>
             
-            rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable
+            rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
             git clone https://gitlab.com/OrangeFox/bootable/Recovery -b fox_<< pipeline.parameters.manifest-branch >> ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
 
       - run:
@@ -141,32 +141,24 @@ jobs:
 
             export ALLOW_MISSING_DEPENDENCIES=true
 
-            # export OF_PATCH_VBMETA_FLAG=1
             export FOX_AB_DEVICE=1
             export FOX_REMOVE_AAPT=1
-            export FOX_DRASTIC_SIZE_REDUCTION=1
-            export FOX_USE_LZMA_COMPRESSION=1
+            export OF_USE_LZMA_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
-            export FOX_USE_TWRP_SAR_DETECT=1
-            export FOX_PATCH_AVB20=1
-            export FOX_USE_BASH_SHELL=1
-            export FOX_ASH_IS_BASH=1
-            export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
-            export FOX_TWRP_COMPATIBILITY_MODE=1
-            export FOX_CHECK_OVERWRITE_ATTEMPTS=1
+            export OF_PATCH_AVB20=1
             
-            export FOX_SCREEN_H=1600
-            export FOX_STATUS_INDENT_LEFT=48
-            export FOX_STATUS_INDENT_RIGHT=48
-            export FOX_CLOCK_POS=1
-            export FOX_ALLOW_DISABLE_NAVBAR=1
+            export OF_SCREEN_H=1600
+            export OF_STATUS_INDENT_LEFT=48
+            export OF_STATUS_INDENT_RIGHT=48
+            export OF_CLOCK_POS=1
+            export OF_ALLOW_DISABLE_NAVBAR=1
 
             set -e
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka << pipeline.parameters.target >>
 
       - persist_to_workspace:
-          root: ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
+          root: OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/
           paths:
             - << pipeline.parameters.device-name >>
 
@@ -187,7 +179,6 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
-            VERSION=$(my-binary --version)
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.img
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.tar
             ghr -t ${GITHUB_TOKEN} -u ${GITHUB_USERNAME} -r ${GITHUB_REPO} -c ${CIRCLE_SHA1} -delete ${CIRCLE_SHA1} releases/<< pipeline.parameters.device-name >>/*.zip
