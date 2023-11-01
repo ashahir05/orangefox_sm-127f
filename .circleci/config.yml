@@ -163,7 +163,9 @@ jobs:
           name: Prepare artifacts
           command: |
             mkdir -p ${CIRCLE_WORKING_DIRECTORY}/artifacts
-            mv ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/<< pipeline.parameters.device-name >>/OrangeFox-Unofficial-a12s.* ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.img ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.zip ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.tar ${CIRCLE_WORKING_DIRECTORY}/artifacts/
       
       - store_artifacts:
           path: artifacts
