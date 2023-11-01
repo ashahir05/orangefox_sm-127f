@@ -21,7 +21,7 @@ parameters:
     default: "recoveryimage"
   build-type:
     type: string
-    default: "userdebug"
+    default: "eng"
 
 jobs:
   build:
