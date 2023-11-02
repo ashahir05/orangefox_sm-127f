@@ -150,7 +150,7 @@ jobs:
             export FOX_BUILD_DEVICE=a12s
             export FOX_AB_DEVICE=1
             export FOX_REMOVE_AAPT=1
-            export OF_USE_LZMA_COMPRESSION=1
+            export OF_USE_LZ4_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
             export OF_PATCH_AVB20=1
             export FOX_DRASTIC_SIZE_REDUCTION=1
