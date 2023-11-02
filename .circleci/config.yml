@@ -138,23 +138,8 @@ jobs:
             cd ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>
             set +e
             source build/envsetup.sh
-
             export ALLOW_MISSING_DEPENDENCIES=true
-            
-            export FOX_BUILD_DEVICE=<< pipeline.parameters.device-name >>
-            export FOX_AB_DEVICE=1
-            export FOX_REMOVE_AAPT=1
-            export OF_USE_LZMA_COMPRESSION=1
-            export FOX_VANILLA_BUILD=1
-            export OF_PATCH_AVB20=1
-            export FOX_DRASTIC_SIZE_REDUCTION=1
-            
-            export OF_SCREEN_H=1600
-            export OF_STATUS_INDENT_LEFT=48
-            export OF_STATUS_INDENT_RIGHT=48
-            export OF_CLOCK_POS=1
-            export OF_ALLOW_DISABLE_NAVBAR=1
-
+	          export LC_ALL="C"
             set -e
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka -j$(nproc --all) adbd << pipeline.parameters.target >>
