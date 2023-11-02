@@ -126,7 +126,7 @@ jobs:
             rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
             rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
             git clone https://gitlab.com/OrangeFox/bootable/Recovery -b fox_12.1 ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
-            git clone https://gitlab.com/OrangeFox/vendor/recovery -b fox_<< pipeline.parameters.manifest-branch >> ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
+            git clone https://gitlab.com/OrangeFox/vendor/recovery -b << pipeline.parameters.manifest-branch >> ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
 
       - run:
           name: Get device tree
