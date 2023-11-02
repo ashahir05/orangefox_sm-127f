@@ -126,7 +126,7 @@ jobs:
             rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
             rm -rf ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
             git clone https://gitlab.com/OrangeFox/bootable/Recovery -b fox_12.1 ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/bootable/recovery
-            git clone https://gitlab.com/OrangeFox/vendor/recovery -b fox_12.1 ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
+            git clone https://gitlab.com/OrangeFox/vendor/recovery -b fox_<< pipeline.parameters.manifest-branch >> ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/vendor/recovery
 
       - run:
           name: Get device tree
@@ -145,17 +145,18 @@ jobs:
             export LC_ALL="C"
             
             export FOX_TARGET_DEVICES=a12s
-            export TARGET_DEVICE_ALT=a12s,a12,A12
 
             export FOX_BUILD_DEVICE=a12s
             export FOX_AB_DEVICE=1
+            export OF_FORCE_PREBUILT_KERNEL=1
+            export OF_AB_DEVICE_WITH_RECOVERY_PARTITION=1
+            export OF_DEFAULT_KEYMASTER_VERSION=1
             export FOX_REMOVE_AAPT=1
-            export OF_TWRP_COMPATIBILITY_MODE=1
-            export OF_USE_LZ4_COMPRESSION=1
+            export OF_USE_LZMA_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
             export OF_PATCH_AVB20=1
             export FOX_DRASTIC_SIZE_REDUCTION=1
-            export FOX_USE_BASH_SHELL=1s
+            export FOX_USE_BASH_SHELL=1
             export FOX_DELETE_INITD_ADDON=1	
             export FOX_DELETE_AROMAFM=1
             export FOX_ASH_IS_BASH=1
@@ -165,17 +166,9 @@ jobs:
             export OF_STATUS_INDENT_RIGHT=48
             export OF_CLOCK_POS=1
             export OF_ALLOW_DISABLE_NAVBAR=1
-
-            # Dump build vars
-            echo "------ START BUILD VARS ------" 
-            export | grep "FOX"
-            export | grep "OF_"
-            export | grep "TW_"
-            export | grep "TARGET_"
-            echo "------- END BUILD VARS -------"
             set -e
 
-            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka -j$(nproc --all) adbd << pipeline.parameters.target >>
+            lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka adbd << pipeline.parameters.target >>
 
       - run:
           name: Prepare artifacts
