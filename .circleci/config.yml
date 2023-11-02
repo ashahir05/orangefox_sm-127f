@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   manifest-branch:
     type: string
-    default: "master"
+    default: "fox_12.1"
   device-tree:
     type: string
     default: "https://github.com/ashahir05/twrp_sm-127f"
@@ -151,7 +151,7 @@ jobs:
             export FOX_AB_DEVICE=1
             export OF_FORCE_PREBUILT_KERNEL=1
             export OF_AB_DEVICE_WITH_RECOVERY_PARTITION=1
-            export OF_DEFAULT_KEYMASTER_VERSION=1
+            export OF_DEFAULT_KEYMASTER_VERSION=4
             export FOX_REMOVE_AAPT=1
             export OF_USE_LZMA_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
