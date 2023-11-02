@@ -169,7 +169,7 @@ jobs:
             export | grep "TW_"
             export | grep "TARGET_"
             echo "------- END BUILD VARS -------\n"
-	          set -e
+            set -e
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka -j$(nproc --all) adbd << pipeline.parameters.target >>
 
