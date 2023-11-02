@@ -89,12 +89,7 @@ jobs:
             sudo swapon /swapfile
 
             sudo modprobe zram
-            
-            set +e
-            sudo swapoff /dev/zram0
-            sudo zramctl --reset /dev/zram0
-            set -e
-            
+            sleep 1
             sudo zramctl /dev/zram0 --algorithm zstd --size 56G
             sudo mkswap /dev/zram0
             sudo swapon --priority 150 /dev/zram0
@@ -147,7 +142,7 @@ jobs:
             export ALLOW_MISSING_DEPENDENCIES=true
             export LC_ALL="C"
             
-            export OF_TARGET_DEVICES=a12s
+            export FOX_TARGET_DEVICES=a12s
             export TARGET_DEVICE_ALT=a12s,a12,A12
 
             export FOX_BUILD_DEVICE=a12s
