@@ -150,6 +150,7 @@ jobs:
             export FOX_BUILD_DEVICE=a12s
             export FOX_AB_DEVICE=1
             export FOX_REMOVE_AAPT=1
+            export OF_TWRP_COMPATIBILITY_MODE=1
             export OF_USE_LZ4_COMPRESSION=1
             export FOX_VANILLA_BUILD=1
             export OF_PATCH_AVB20=1
@@ -171,7 +172,7 @@ jobs:
             export | grep "OF_"
             export | grep "TW_"
             export | grep "TARGET_"
-            echo "------- END BUILD VARS -------\n"
+            echo "------- END BUILD VARS -------"
             set -e
 
             lunch twrp_<< pipeline.parameters.device-name >>-<< pipeline.parameters.build-type >> && make clean && mka -j$(nproc --all) adbd << pipeline.parameters.target >>
@@ -180,9 +181,9 @@ jobs:
           name: Prepare artifacts
           command: |
             mkdir -p ${CIRCLE_WORKING_DIRECTORY}/artifacts
-            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.img ${CIRCLE_WORKING_DIRECTORY}/artifacts/
-            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.zip ${CIRCLE_WORKING_DIRECTORY}/artifacts/
-            mv ${CIRCLE_WORKING_DIRECTORY}/out/target/product/<< pipeline.parameters.device-name >>/*.tar ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/<< pipeline.parameters.device-name >>/*.img ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/<< pipeline.parameters.device-name >>/*.zip ${CIRCLE_WORKING_DIRECTORY}/artifacts/
+            mv ${CIRCLE_WORKING_DIRECTORY}/OrangeFox/fox_<< pipeline.parameters.manifest-branch >>/out/target/product/<< pipeline.parameters.device-name >>/*.tar ${CIRCLE_WORKING_DIRECTORY}/artifacts/
       
       - store_artifacts:
           path: artifacts
