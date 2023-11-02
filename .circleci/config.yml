@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   manifest-branch:
     type: string
-    default: "fox_12.1"
+    default: "12.1"
   device-tree:
     type: string
     default: "https://github.com/ashahir05/twrp_sm-127f"
